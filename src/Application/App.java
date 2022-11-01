@@ -1,18 +1,14 @@
 package Application;
 
-import java.lang.reflect.ParameterizedType;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import com.google.gson.Gson;
-
 public class App {
     private static DecimalFormat decimalFormatter = new DecimalFormat("#");
-    private static Gson gson = new Gson();
-    
+
     public static void main(String[] args) throws Exception {
         decimalFormatter.setRoundingMode(RoundingMode.DOWN);
 
@@ -25,15 +21,19 @@ public class App {
         Integer x = sc.nextInt();
         switch(x){
             case 1:
+                System.out.println();
                 firstQuestion();
                 break;
             case 2:
+                System.out.println();
                 secondQuestion();
                 break;
             case 3:
+                System.out.println();
                 thirdQuestion();
                 break;
             case 4:
+                System.out.println();
                 fourthQuestion();
                 break;
             default:
@@ -163,73 +163,52 @@ public class App {
             System.out.println("O endereço IP informado, não pertence à rede.");
     }
     
-
     public static void fourthQuestion() throws Exception {
-        // NetworkList<NetworkList<NetworkList<String>>> networkList = gson.fromJson("{\"initialIP\":\"10.10.10.0\",\"finalIP\":\"10.10.10.255\",\"list\":[{\"initialIP\":\"10.10.10.0\",\"finalIP\":\"10.10.10.100\",\"list\":[{\"initialIP\":\"10.10.10.0\",\"finalIP\":\"10.10.10.50\",\"list\":[\"\"]},{\"initialIP\":\"10.10.10.51\",\"finalIP\":\"10.10.10.100\",\"list\":[\"\"]}]},{\"initialIP\":\"10.10.10.101\",\"finalIP\":\"10.10.10.200\",\"list\":[{\"initialIP\":\"10.10.10.101\",\"finalIP\":\"10.10.10.150\",\"list\":[\"\"]},{\"initialIP\":\"10.10.10.151\",\"finalIP\":\"10.10.10.200\",\"list\":[\"\"]}]},{\"initialIP\":\"10.10.10.201\",\"finalIP\":\"10.10.10.255\",\"list\":[{\"initialIP\":\"10.10.10.201\",\"finalIP\":\"10.10.10.210\",\"list\":[\"\"]},{\"initialIP\":\"10.10.10.211\",\"finalIP\":\"10.10.10.230\",\"list\":[\"\"]},{\"initialIP\":\"10.10.10.231\",\"finalIP\":\"10.10.10.255\",\"list\":[\"\"]}]}]}"
-        // , NetworkList.class);
-
-        NetworkList<NetworkList<NetworkList>> networkList = new NetworkList<NetworkList<NetworkList>>();
-        networkList.initialIP = "10.10.10.0";
-        networkList.finalIP = "10.10.10.255";
-        networkList.list.add(new NetworkList<NetworkList>());
-        networkList.list.add(new NetworkList<NetworkList>());
-        networkList.list.add(new NetworkList<NetworkList>());
-
-        networkList.list.get(0).initialIP = "10.10.10.0";
-        networkList.list.get(0).finalIP = "10.10.10.100";
-        networkList.list.get(0).list.add(new NetworkList());
-        networkList.list.get(0).list.add(new NetworkList());
-        networkList.list.get(0).list.get(0).initialIP = "10.10.10.0";
-        networkList.list.get(0).list.get(0).finalIP = "10.10.10.50";
-        networkList.list.get(0).list.get(1).initialIP = "10.10.10.51";
-        networkList.list.get(0).list.get(1).finalIP = "10.10.10.100";
-
-        networkList.list.get(1).initialIP = "10.10.10.101";
-        networkList.list.get(1).finalIP = "10.10.10.200";
-        networkList.list.get(1).list.add(new NetworkList());
-        networkList.list.get(1).list.add(new NetworkList());
-        networkList.list.get(1).list.get(0).initialIP = "10.10.10.101";
-        networkList.list.get(1).list.get(0).finalIP = "10.10.10.150";
-        networkList.list.get(1).list.get(1).initialIP = "10.10.10.151";
-        networkList.list.get(1).list.get(1).finalIP = "10.10.10.200";
-
-        networkList.list.get(2).initialIP = "10.10.10.201";
-        networkList.list.get(2).finalIP = "10.10.10.255";
-        networkList.list.get(2).list.add(new NetworkList());
-        networkList.list.get(2).list.add(new NetworkList());
-        networkList.list.get(2).list.add(new NetworkList());
-        networkList.list.get(2).list.get(0).initialIP = "10.10.10.201";
-        networkList.list.get(2).list.get(0).finalIP = "10.10.10.210";
-        networkList.list.get(2).list.get(1).initialIP = "10.10.10.211";
-        networkList.list.get(2).list.get(1).finalIP = "10.10.10.230";
-        networkList.list.get(2).list.get(2).initialIP = "10.10.10.231";
-        networkList.list.get(2).list.get(2).finalIP = "10.10.10.255";
-
-        System.out.println("O JSON a seguir representa nossa lista de endereços de rede:");
+        System.out.println("A seguir, será pedido para que você digite uma lista de endereços de rede, para parar o input da lista de endereços de rede e passar para o input do endereço de ip, digite \"*\".");
         System.out.println();
-        System.out.println(gson.toJson(networkList));
 
-        System.out.println("Digite o endereço IP entre o range 10.10.10.0 e 10.10.10.255:");
         Scanner input = new Scanner(System.in);
+        List<NetworkAddress> addresses = new ArrayList<>();
+
+        String aux = "";
+
+        while (!aux.equals("*")) {
+            System.out.println("Digite um endereço de rede no formato: (255.255.255.255 / 32). Para parar o input da lista digite \"*\".");
+
+            aux = input.nextLine();
+
+            if (!aux.equals("*")) {
+                addresses.add(new NetworkAddress(aux.split("/")));
+
+                if (aux.split("/").length != 2 || aux.split("/")[0].split("\\.").length != 4)
+                    throw new Exception("Endereço de rede digitado é inválido.");
+            }
+
+            System.out.println();
+        }
+
+        System.out.println("Digite o endereço IP no formato: (255.255.255.255)");
         String ip = input.nextLine();
         System.out.println();
 
-        long ipLong = Helper.ipToLong(ip);
+        if (ip.split("\\.").length != 4)
+            throw new Exception("Endereço de IP digitado é inválido.");
 
-        if (ip.split("\\.").length != 4 || ipLong < networkList.getLongInitialIP() || ipLong > networkList.getLongFinalIP())
-            throw new Exception("Endereço digitado é inválido ou fora do range solicitado.");
+        long ipLong = Helper.ipToLong(ip);
+        NetworkAddress result = new NetworkAddress(new String[]{"", "1"});
+
+        for(NetworkAddress address : addresses) {
+            Integer diffInBits = 32 - address.mask;
+            Double hostNumber = Math.pow(2, diffInBits);
+            long ipLongNetwork = Helper.ipToLong(address.ip);
+            long ipLongNetworkFinal = ipLongNetwork + hostNumber.longValue() - 1;
+            
+            if (ipLong >= ipLongNetwork && ipLong <= ipLongNetworkFinal)
+                if (address.mask > result.mask)
+                    result = address;
+        }
         
-        networkList.list.forEach(x1 -> {
-            if (x1.list != null) {
-                x1.list.forEach(x2 -> {
-                    if (ipLong >= x2.getLongInitialIP() && ipLong <= x2.getLongFinalIP())
-                    {
-                        System.out.println("Pertence ao:");
-                        System.out.println(gson.toJson(x2));
-                        return;
-                    }
-                });
-            }
-        });
+        System.out.println("Pertence ao endereço de rede:");
+        System.out.println(String.format("%s/%d", result.ip, result.mask));
     }
 }
